@@ -1,10 +1,15 @@
-package com.ekosp.popularmovies;
+package com.ekosp.popularmovies.activity;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import com.ekosp.popularmovies.R;
+import com.ekosp.popularmovies.fragment.MovieDetailFragment;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -12,8 +17,12 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

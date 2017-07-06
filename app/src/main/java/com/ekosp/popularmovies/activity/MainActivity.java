@@ -1,4 +1,4 @@
-package com.ekosp.popularmovies;
+package com.ekosp.popularmovies.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.ekosp.popularmovies.BuildConfig;
+import com.ekosp.popularmovies.R;
+import com.ekosp.popularmovies.fragment.MovieDetailFragment;
 import com.ekosp.popularmovies.helper.MoviesApiService;
 import com.ekosp.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
@@ -97,6 +101,13 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void success(Movie.MovieResult movieResult, Response response) {
                     mAdapter.setMovieList(movieResult.getResults());
+
+                    Movie mStringArray = movieResult.getResults().get(0);
+
+                        String res = mStringArray.toString();
+                        Log.i("Movie.getResults()", res);
+                        Log.i("Movie.getResults()", "-----------------------");
+
                 }
                 @Override
                 public void failure(RetrofitError error) {

@@ -1,4 +1,4 @@
-package com.ekosp.popularmovies;
+package com.ekosp.popularmovies.fragment;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ekosp.popularmovies.activity.MovieDetailActivity;
+import com.ekosp.popularmovies.R;
 import com.ekosp.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 

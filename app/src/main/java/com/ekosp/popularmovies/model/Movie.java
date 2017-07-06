@@ -105,6 +105,10 @@ public class Movie implements Parcelable {
         parcel.writeString(releaseDate);
     }
 
+    public String toString(){
+        return title+"/"+poster+"/"+backdrop+"/"+overview+"/"+userRating+"/"+releaseDate;
+    }
+
     public class MovieResult {
 
         private List<Movie> results;
