@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,9 +15,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ekosp.popularmovies.BuildConfig;
 import com.ekosp.popularmovies.activity.MovieDetailActivity;
 import com.ekosp.popularmovies.R;
+import com.ekosp.popularmovies.helper.MoviesApiService;
 import com.ekosp.popularmovies.model.Movie;
+import com.ekosp.popularmovies.model.Trailer;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -26,11 +30,18 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import retrofit.Callback;
+import retrofit.RequestInterceptor;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 public class MovieDetailFragment extends Fragment {
 
     public static final String PARAM_MOVIE = "PARAM_MOVIE";
     private Movie mMovie;
     private TextView mMovieRatingView;
+   // private FetchTrailers fetchTrailers;
 
     public MovieDetailFragment() {
     }
@@ -88,6 +99,13 @@ public class MovieDetailFragment extends Fragment {
 
         updateRatingBar();
 
+        //FetchTrailers asdsa = new FetchTrailers();
+      //  Log.i("DETAIL","id detail movie: "+mMovie.getId()+ " dan nama movie :"+mMovie.getTitle());
+        long idku = mMovie.getId();
+        Log.i("DETAIL", "nilai id movie baru: "+idku);
+      //  fetchTrailer(idku);
+
+
         return rootView;
     }
 
@@ -122,5 +140,4 @@ public class MovieDetailFragment extends Fragment {
         }
         return sdf.format(calendar.getTime());
     }
-
 }

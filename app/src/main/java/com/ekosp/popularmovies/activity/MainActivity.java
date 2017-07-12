@@ -1,6 +1,5 @@
 package com.ekosp.popularmovies.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,24 +8,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-
 import com.ekosp.popularmovies.BuildConfig;
 import com.ekosp.popularmovies.R;
 import com.ekosp.popularmovies.fragment.MovieDetailFragment;
+import com.ekosp.popularmovies.helper.MoviesAdapter;
 import com.ekosp.popularmovies.helper.MoviesApiService;
 import com.ekosp.popularmovies.model.Movie;
-import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
@@ -34,12 +25,15 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static com.ekosp.popularmovies.R.id.recyclerView;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.movieCallbacks {
 
     private MoviesAdapter mAdapter;
     private final static String MOST_POPULAR = "popular";
     private final static String HIGHEST_RATED = "top_rated";
+    private final static String FAVORITES = "favotires";
     private final String mSortBy = MOST_POPULAR;
 
     @Override
@@ -74,12 +68,14 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
         }
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) findViewById(recyclerView);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        mAdapter = new MoviesAdapter(this);
+        mAdapter = new MoviesAdapter(this, this);
+
         mRecyclerView.setAdapter(mAdapter);
 
         fetchMovies(mSortBy);
+
     }
 
     private void fetchMovies(String short_by) {
@@ -101,13 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void success(Movie.MovieResult movieResult, Response response) {
                     mAdapter.setMovieList(movieResult.getResults());
-
-                    Movie mStringArray = movieResult.getResults().get(0);
-
-                        String res = mStringArray.toString();
-                        Log.i("Movie.getResults()", res);
-                        Log.i("Movie.getResults()", "-----------------------");
-
                 }
                 @Override
                 public void failure(RetrofitError error) {
@@ -140,6 +129,9 @@ public class MainActivity extends AppCompatActivity {
             case HIGHEST_RATED:
                 menu.findItem(R.id.sort_by_top_rated).setChecked(true);
                 break;
+            case FAVORITES:
+                menu.findItem(R.id.sort_by_favorites).setChecked(true);
+                break;
         }
         return true;
     }
@@ -155,83 +147,20 @@ public class MainActivity extends AppCompatActivity {
                 fetchMovies(MOST_POPULAR);
                 item.setChecked(true);
                 break;
+            case R.id.sort_by_favorites:
+                fetchMovies(FAVORITES);
+                item.setChecked(true);
+                break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    // add inner class viewHolder
-    public static class MovieViewHolder extends RecyclerView.ViewHolder
-    {
-        public final ImageView imageView;
-        public MovieViewHolder(View itemView)
-        {
-            super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.imageView);
-        }
-    }
-
-    //add inner class adapter
-    public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder>
-    {
-        private final List<Movie> mMovieList;
-        private final LayoutInflater mInflater;
-        private final Context mContext;
-
-        public MoviesAdapter(Context context)
-        {
-            this.mContext = context;
-            this.mInflater = LayoutInflater.from(context);
-            this.mMovieList = new ArrayList<>();
-        }
-
-        @Override
-        public MovieViewHolder onCreateViewHolder(final ViewGroup parent, int viewType)
-        {
-            View view = mInflater.inflate(R.layout.row_movie, parent, false);
-            final MovieViewHolder viewHolder = new MovieViewHolder(view);
-
-            // add onclick
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    int pos = viewHolder.getAdapterPosition();
-                    Movie movie = mMovieList.get(pos);
-                    openMovieDetail(movie);
-                }
-            });
-
-            return viewHolder;
-        }
-
-        @Override
-        public void onBindViewHolder(MovieViewHolder holder, int position)
-        {
-            Movie movie = mMovieList.get(position);
-            Picasso.with(mContext)
-                    .load(movie.getPoster())
-                    .placeholder(R.color.colorPrimary)
-                    .into(holder.imageView);
-        }
-
-        @Override
-        public int getItemCount()
-        {
-            return (mMovieList == null) ? 0 : mMovieList.size();
-        }
-
-        public void setMovieList(List<Movie> movieList)
-        {
-            this.mMovieList.clear();
-            this.mMovieList.addAll(movieList);
-            notifyDataSetChanged();
-        }
-    }
-
-    private void openMovieDetail(Movie movie) {
+    @Override
+    public void open (Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(MovieDetailFragment.PARAM_MOVIE, movie);
         startActivity(intent);
     }
-
 }

@@ -10,6 +10,8 @@ public class Movie implements Parcelable {
 
     private static final String TMDB_IMAGE_PATH = "http://image.tmdb.org/t/p/w500";
 
+    @SerializedName("id")
+    private long id;
     @SerializedName("original_title")
     private String title;
     @SerializedName("poster_path")
@@ -26,6 +28,7 @@ public class Movie implements Parcelable {
     public Movie() {}
 
     private Movie(Parcel in) {
+        id = in.readLong();
         title = in.readString();
         poster = in.readString();
         backdrop = in.readString();
@@ -38,13 +41,21 @@ public class Movie implements Parcelable {
         @Override
         public Movie createFromParcel(Parcel in) {
             return new Movie(in);
-        }
+     }
 
         @Override
         public Movie[] newArray(int size) {
             return new Movie[size];
         }
     };
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -97,6 +108,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(id);
         parcel.writeString(title);
         parcel.writeString(poster);
         parcel.writeString(backdrop);
