@@ -9,64 +9,30 @@ import java.util.List;
 
 public class Trailer3 implements Parcelable {
 
+    //private static final String TMDB_IMAGE_PATH = "http://image.tmdb.org/t/p/w500";
 
     @SerializedName("id")
-    private String mId;
+    private String id;
     @SerializedName("key")
-    private String mKey;
+    private String key;
     @SerializedName("name")
-    private String mName;
+    private String name;
     @SerializedName("site")
-    private String mSite;
+    private String site;
     @SerializedName("size")
-    private String mSize;
+    private String size;
+    @SerializedName("type")
+    private String type;
 
-    public String getmId() {
-        return mId;
-    }
+    public Trailer3() {}
 
-    public void setmId(String mId) {
-        this.mId = mId;
-    }
-
-    public String getmKey() {
-        return mKey;
-    }
-
-    public void setmKey(String mKey) {
-        this.mKey = mKey;
-    }
-
-    public String getmName() {
-        return mName;
-    }
-
-    public void setmName(String mName) {
-        this.mName = mName;
-    }
-
-    public String getmSite() {
-        return mSite;
-    }
-
-    public void setmSite(String mSite) {
-        this.mSite = mSite;
-    }
-
-    public String getmSize() {
-        return mSize;
-    }
-
-    public void setmSize(String mSize) {
-        this.mSize = mSize;
-    }
-
-    protected Trailer3(Parcel in) {
-        mId = in.readString();
-        mKey = in.readString();
-        mName = in.readString();
-        mSite = in.readString();
-        mSize = in.readString();
+    private Trailer3(Parcel in) {
+        id = in.readString();
+        key = in.readString();
+        name = in.readString();
+        site = in.readString();
+        size = in.readString();
+        type = in.readString();
     }
 
     public static final Creator<Trailer3> CREATOR = new Creator<Trailer3>() {
@@ -81,28 +47,80 @@ public class Trailer3 implements Parcelable {
         }
     };
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mId);
-        dest.writeString(mKey);
-        dest.writeString(mName);
-        dest.writeString(mSite);
-        dest.writeString(mSize);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(key);
+        parcel.writeString(name);
+        parcel.writeString(site);
+        parcel.writeString(size);
+        parcel.writeString(type);
     }
 
-    public Trailer3() {}
+    public String toString(){
+        return id;
+    }
 
     public class TrailerResult {
 
-        private List<Trailer3> trailers ;
+        private List<Trailer3> results;
 
         public List<Trailer3> getResults() {
-            return trailers;
+            return results;
         }
     }
 

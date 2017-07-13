@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,20 +16,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ekosp.popularmovies.BuildConfig;
 import com.ekosp.popularmovies.activity.MovieDetailActivity;
 import com.ekosp.popularmovies.R;
+import com.ekosp.popularmovies.helper.MoviesAdapter;
 import com.ekosp.popularmovies.helper.MoviesApiService;
+import com.ekosp.popularmovies.helper.TrailerAdapter;
 import com.ekosp.popularmovies.model.Movie;
+import com.ekosp.popularmovies.model.Trailer;
 import com.ekosp.popularmovies.model.Trailer;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import retrofit.Callback;
@@ -36,11 +44,19 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MovieDetailFragment extends Fragment {
+import static com.ekosp.popularmovies.R.id.recyclerView;
+
+public class MovieDetailFragment extends Fragment implements TrailerAdapter.trailerCallbacks {
 
     public static final String PARAM_MOVIE = "PARAM_MOVIE";
+    public static final String PARAM_TRAILERS = "PARAM_TRAILERS";
+    public static final String PARAM_REVIEWS = "PARAM_REVIEWS";
     private Movie mMovie;
     private TextView mMovieRatingView;
+    private TrailerAdapter mTrailerListAdapter;
+    private long idku =0;
+
+    RecyclerView mRecyclerViewForTrailers;
    // private FetchTrailers fetchTrailers;
 
     public MovieDetailFragment() {
@@ -86,10 +102,13 @@ public class MovieDetailFragment extends Fragment {
         TextView mMovieReleaseDateView = (TextView) rootView.findViewById(R.id.movie_release_date);
         mMovieRatingView = (TextView) rootView.findViewById(R.id.movie_user_rating);
 
+        //Buttom mButtonWatchTrailer = (Buttom) rootView.findViewById(R.id.)
+
         mMovieTitleView.setText(mMovie.getTitle());
         mMovieOverviewView.setText(mMovie.getOverview());
 
-        mMovieReleaseDateView.setText(getCustomDate(mMovie.getReleaseDate()));
+        //mMovieReleaseDateView.setText(getCustomDate(mMovie.getReleaseDate()));
+        mMovieReleaseDateView.setText(mMovie.getReleaseDate());
         ImageView mMoviePosterView = (ImageView) rootView.findViewById(R.id.movie_poster);
 
         Picasso.with(getContext())
@@ -99,12 +118,30 @@ public class MovieDetailFragment extends Fragment {
 
         updateRatingBar();
 
-        //FetchTrailers asdsa = new FetchTrailers();
-      //  Log.i("DETAIL","id detail movie: "+mMovie.getId()+ " dan nama movie :"+mMovie.getTitle());
-        long idku = mMovie.getId();
-        Log.i("DETAIL", "nilai id movie baru: "+idku);
-      //  fetchTrailer(idku);
+     // tampilkan trailer movies
 
+
+
+        mRecyclerViewForTrailers = (RecyclerView) rootView.findViewById(R.id.trailer_list);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerViewForTrailers.setLayoutManager(layoutManager);
+        mTrailerListAdapter = new TrailerAdapter(getContext(), null); // diisi apa yaaa?
+
+        mRecyclerViewForTrailers.setAdapter(mTrailerListAdapter);
+        mRecyclerViewForTrailers.setNestedScrollingEnabled(false);
+
+        //  Log.i("DETAIL","id detail movie: "+mMovie.getId()+ " dan nama movie :"+mMovie.getTitle());
+        idku = mMovie.getId();
+        Log.i("DETAIL", "nilai id movie baru: "+idku);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(PARAM_TRAILERS)) {
+            List<Trailer> trailers = savedInstanceState.getParcelableArrayList(PARAM_TRAILERS);
+            mTrailerListAdapter.setTrailerList(trailers);
+            //mButtonWatchTrailer.setEnabled(true);
+        } else {
+            fetchTrailer(idku   );
+        }
 
         return rootView;
     }
@@ -112,6 +149,11 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle saveInstanceState) {
         super.onSaveInstanceState(saveInstanceState);
+
+       /* List<Trailer> trailers = mTrailerListAdapter.getTrailerList();
+        if (trailers != null && !trailers.isEmpty()) {
+            saveInstanceState.putParcelableList(PARAM_TRAILERS, trailers);
+        }*/
     }
 
     @Override
@@ -139,5 +181,40 @@ public class MovieDetailFragment extends Fragment {
             e.printStackTrace();
         }
         return sdf.format(calendar.getTime());
+    }
+
+    private void fetchTrailer(final long movieId) {
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint("http://api.themoviedb.org/3")
+                .setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestFacade request) {
+                        request.addEncodedQueryParam("api_key", BuildConfig.THE_MOVIE_DATABASE_API_KEY);
+                    }
+                })
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build();
+
+
+        MoviesApiService service = restAdapter.create(MoviesApiService.class);
+        service.getTrailerMovies( movieId, new Callback<Trailer.TrailerResult>() {
+            @Override
+            public void success(Trailer.TrailerResult trailerResult, Response response) {
+//                mAdapter.setMovieList(trailerResult.getResults());
+                mTrailerListAdapter.setTrailerList(trailerResult.getResults());
+                Log.i("SUKSES", "movieDetailActivity getTrailer: ======================="+trailerResult.getResults());
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                error.printStackTrace();
+            }
+        });
+    }
+
+
+    @Override
+    public void open(Trailer trailer) {
+        Toast.makeText(getContext(), "buka trailer dari movie id :"+idku, Toast.LENGTH_SHORT).show();
     }
 }

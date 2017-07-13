@@ -3,7 +3,7 @@ package com.ekosp.popularmovies.helper;
 import android.util.Log;
 
 import com.ekosp.popularmovies.BuildConfig;
-import com.ekosp.popularmovies.model.Trailer3;
+import com.ekosp.popularmovies.model.Trailer;
 
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
@@ -32,9 +32,9 @@ public class FetchTrailers {
                 .build();
 
         MoviesApiService service = restAdapter.create(MoviesApiService.class);
-        service.getTrailerMovies(  new Callback<Trailer3.TrailerResult>() {
+        service.getTrailerMovies(  id, new Callback<Trailer.TrailerResult>() {
                 @Override
-                public void success(Trailer3.TrailerResult trailerResult, Response response) {
+                public void success(Trailer.TrailerResult trailerResult, Response response) {
                    // mAdapter.setMovieList(movieResult.getResults());
                     Log.i("SUKSES", "trailer url"+trailerResult.getResults());
                 }

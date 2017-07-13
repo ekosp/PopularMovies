@@ -84,9 +84,9 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
         MoviesApiService service = restAdapter.create(MoviesApiService.class);
-        service.getTrailerMovies2( new Callback<Trailer.MovieResult>() {
+        service.getTrailerMovies2( new Callback<Trailer.TrailerResult>() {
             @Override
-            public void success(Trailer.MovieResult trailerResult, Response response) {
+            public void success(Trailer.TrailerResult trailerResult, Response response) {
 //                mAdapter.setMovieList(trailerResult.getResults());
                 Log.i("SUKSES", "movieDetailActivity getTrailer: ======================="+trailerResult.getResults());
             }

@@ -6,6 +6,7 @@ import com.ekosp.popularmovies.model.Trailer3;
 
 import retrofit.Callback;
 import retrofit.http.GET;
+import retrofit.http.Path;
 
 /**
  * Created by Eko S.P on 01/07/2017.
@@ -22,10 +23,10 @@ public interface MoviesApiService {
     void getTopRatedMovies(Callback<Movie.MovieResult> callback);
 
     @GET("/movie/{id}/videos")
-    void getTrailerMovies( Callback<Trailer3.TrailerResult> callback );
+    void getTrailerMovies(@Path("id") long movieId, Callback<Trailer.TrailerResult> callback );
 
 
     // @GET("/movie/popular")
     @GET("/movie/321612/videos")
-    void getTrailerMovies2 (Callback<Trailer.MovieResult> callback);
+    void getTrailerMovies2 (Callback<Trailer.TrailerResult> callback);
 }

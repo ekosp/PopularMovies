@@ -106,5 +106,13 @@
             android:textColor="@color/text_color_for_movie_overview"
             android:textIsSelectable="true" />
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/trailer_list"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/trailer_list_vertical_padding"
+            tools:listitem="@layout/trailer_list_content" />
+
     </LinearLayout>
 </ScrollView>

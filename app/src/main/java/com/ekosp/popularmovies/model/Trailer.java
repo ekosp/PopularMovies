@@ -115,7 +115,7 @@ public class Trailer implements Parcelable {
         return id;
     }
 
-    public class MovieResult {
+    public class TrailerResult {
 
         private List<Trailer> results;
 
