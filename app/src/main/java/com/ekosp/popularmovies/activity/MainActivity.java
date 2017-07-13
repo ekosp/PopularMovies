@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import com.ekosp.popularmovies.BuildConfig;
 import com.ekosp.popularmovies.R;
 import com.ekosp.popularmovies.fragment.MovieDetailFragment;
+import com.ekosp.popularmovies.helper.FetchHelper;
 import com.ekosp.popularmovies.helper.MoviesAdapter;
 import com.ekosp.popularmovies.helper.MoviesApiService;
 import com.ekosp.popularmovies.model.Movie;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.mov
     private final static String HIGHEST_RATED = "top_rated";
     private final static String FAVORITES = "favotires";
     private final String mSortBy = MOST_POPULAR;
+    private FetchHelper fetchHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,47 +76,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.mov
 
         mRecyclerView.setAdapter(mAdapter);
 
-        fetchMovies(mSortBy);
+        fetchHelper = new FetchHelper();
+        fetchHelper.setmAdapter(mAdapter);
+        fetchHelper.fetchMovies(mSortBy);
 
-    }
-
-    private void fetchMovies(String short_by) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://api.themoviedb.org/3")
-                .setRequestInterceptor(new RequestInterceptor() {
-                    @Override
-                    public void intercept(RequestFacade request) {
-                        request.addEncodedQueryParam("api_key", BuildConfig.THE_MOVIE_DATABASE_API_KEY);
-                    }
-                })
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build();
-
-        MoviesApiService service = restAdapter.create(MoviesApiService.class);
-
-        if (short_by.equals(MOST_POPULAR)) {
-            service.getPopularMovies(new Callback<Movie.MovieResult>() {
-                @Override
-                public void success(Movie.MovieResult movieResult, Response response) {
-                    mAdapter.setMovieList(movieResult.getResults());
-                }
-                @Override
-                public void failure(RetrofitError error) {
-                    error.printStackTrace();
-                }
-            });
-        } else if (short_by.equals(HIGHEST_RATED)) {
-            service.getTopRatedMovies(new Callback<Movie.MovieResult>() {
-                @Override
-                public void success(Movie.MovieResult movieResult, Response response) {
-                    mAdapter.setMovieList(movieResult.getResults());
-                }
-                @Override
-                public void failure(RetrofitError error) {
-                    error.printStackTrace();
-                }
-            });
-        }
     }
 
     @Override
@@ -140,15 +105,15 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.mov
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_by_top_rated:
-                fetchMovies(HIGHEST_RATED);
+                fetchHelper.fetchMovies(HIGHEST_RATED);
                 item.setChecked(true);
                 break;
             case R.id.sort_by_most_popular:
-                fetchMovies(MOST_POPULAR);
+                fetchHelper.fetchMovies(MOST_POPULAR);
                 item.setChecked(true);
                 break;
             case R.id.sort_by_favorites:
-                fetchMovies(FAVORITES);
+                fetchHelper.fetchMovies(FAVORITES);
                 item.setChecked(true);
                 break;
             default:

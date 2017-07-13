@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.ekosp.popularmovies.BuildConfig;
 import com.ekosp.popularmovies.activity.MovieDetailActivity;
 import com.ekosp.popularmovies.R;
+import com.ekosp.popularmovies.helper.FetchHelper;
 import com.ekosp.popularmovies.helper.MoviesAdapter;
 import com.ekosp.popularmovies.helper.MoviesApiService;
 import com.ekosp.popularmovies.helper.TrailerAdapter;
@@ -55,6 +56,7 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
     private TextView mMovieRatingView;
     private TrailerAdapter mTrailerListAdapter;
     private long idku =0;
+    private FetchHelper fetchHelper;
 
     RecyclerView mRecyclerViewForTrailers;
    // private FetchTrailers fetchTrailers;
@@ -131,16 +133,14 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
         mRecyclerViewForTrailers.setAdapter(mTrailerListAdapter);
         mRecyclerViewForTrailers.setNestedScrollingEnabled(false);
 
-        //  Log.i("DETAIL","id detail movie: "+mMovie.getId()+ " dan nama movie :"+mMovie.getTitle());
-        idku = mMovie.getId();
-        Log.i("DETAIL", "nilai id movie baru: "+idku);
-
         if (savedInstanceState != null && savedInstanceState.containsKey(PARAM_TRAILERS)) {
             List<Trailer> trailers = savedInstanceState.getParcelableArrayList(PARAM_TRAILERS);
             mTrailerListAdapter.setTrailerList(trailers);
             //mButtonWatchTrailer.setEnabled(true);
         } else {
-            fetchTrailer(idku   );
+            fetchHelper = new FetchHelper();
+            fetchHelper.setmTrailerListAdapter(mTrailerListAdapter);
+            fetchHelper.fetchTrailer(mMovie.getId() );
         }
 
         return rootView;
@@ -149,11 +149,6 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
     @Override
     public void onSaveInstanceState(Bundle saveInstanceState) {
         super.onSaveInstanceState(saveInstanceState);
-
-       /* List<Trailer> trailers = mTrailerListAdapter.getTrailerList();
-        if (trailers != null && !trailers.isEmpty()) {
-            saveInstanceState.putParcelableList(PARAM_TRAILERS, trailers);
-        }*/
     }
 
     @Override
@@ -169,49 +164,6 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
             mMovieRatingView.setVisibility(View.GONE);
         }
     }
-
-    private String getCustomDate(String dateString){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.US);
-        Calendar  calendar = new GregorianCalendar();
-
-        try {
-            Date aa = sdf.parse(dateString);
-            calendar.setTime( aa );
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return sdf.format(calendar.getTime());
-    }
-
-    private void fetchTrailer(final long movieId) {
-
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://api.themoviedb.org/3")
-                .setRequestInterceptor(new RequestInterceptor() {
-                    @Override
-                    public void intercept(RequestFacade request) {
-                        request.addEncodedQueryParam("api_key", BuildConfig.THE_MOVIE_DATABASE_API_KEY);
-                    }
-                })
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build();
-
-
-        MoviesApiService service = restAdapter.create(MoviesApiService.class);
-        service.getTrailerMovies( movieId, new Callback<Trailer.TrailerResult>() {
-            @Override
-            public void success(Trailer.TrailerResult trailerResult, Response response) {
-//                mAdapter.setMovieList(trailerResult.getResults());
-                mTrailerListAdapter.setTrailerList(trailerResult.getResults());
-                Log.i("SUKSES", "movieDetailActivity getTrailer: ======================="+trailerResult.getResults());
-            }
-            @Override
-            public void failure(RetrofitError error) {
-                error.printStackTrace();
-            }
-        });
-    }
-
 
     @Override
     public void open(Trailer trailer) {
