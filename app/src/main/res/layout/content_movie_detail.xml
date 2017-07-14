@@ -91,6 +91,8 @@
 
                 </LinearLayout>
 
+                <include layout="@layout/favorite_buttons" />
+
             </LinearLayout>
 
         </LinearLayout>

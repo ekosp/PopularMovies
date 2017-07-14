@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -105,6 +106,8 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
         mMovieRatingView = (TextView) rootView.findViewById(R.id.movie_user_rating);
 
         //Buttom mButtonWatchTrailer = (Buttom) rootView.findViewById(R.id.)
+        Button mButtonSaveFavorites = (Button) rootView.findViewById(R.id.button_mark_as_favorite);
+        Button mButtonRemoveFavorites = (Button) rootView.findViewById(R.id.button_remove_from_favorites);
 
         mMovieTitleView.setText(mMovie.getTitle());
         mMovieOverviewView.setText(mMovie.getOverview());

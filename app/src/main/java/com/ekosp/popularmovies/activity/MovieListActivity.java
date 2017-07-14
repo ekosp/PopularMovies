@@ -12,24 +12,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.ekosp.popularmovies.BuildConfig;
+
 import com.ekosp.popularmovies.R;
 import com.ekosp.popularmovies.fragment.MovieDetailFragment;
 import com.ekosp.popularmovies.helper.FetchHelper;
 import com.ekosp.popularmovies.helper.MoviesAdapter;
-import com.ekosp.popularmovies.helper.MoviesApiService;
 import com.ekosp.popularmovies.model.Movie;
-
-import retrofit.Callback;
-import retrofit.RequestInterceptor;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 import static com.ekosp.popularmovies.R.id.recyclerView;
 
 
-public class MainActivity extends AppCompatActivity implements MoviesAdapter.movieCallbacks {
+public class MovieListActivity extends AppCompatActivity implements MoviesAdapter.movieCallbacks {
 
     private MoviesAdapter mAdapter;
     private final static String MOST_POPULAR = "popular";
@@ -54,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.mov
 
         if (!isAppInstalled) {
             //  create shortcut icon at homescreen
-            Intent shortcutIntent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent shortcutIntent = new Intent(getApplicationContext(), MovieListActivity.class);
             shortcutIntent.setAction(Intent.ACTION_MAIN);
             Intent intent = new Intent();
             intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
