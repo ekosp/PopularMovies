@@ -95,7 +95,6 @@ public class Trailer implements Parcelable {
         this.type = type;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -112,7 +111,7 @@ public class Trailer implements Parcelable {
     }
 
     public String toString(){
-        return id;
+        return id+"/"+key+"/"+site;
     }
 
     public class TrailerResult {

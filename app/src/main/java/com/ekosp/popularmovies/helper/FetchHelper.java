@@ -64,9 +64,7 @@ public class FetchHelper {
         service.getTrailerMovies( movieId, new Callback<Trailer.TrailerResult>() {
             @Override
             public void success(Trailer.TrailerResult trailerResult, Response response) {
-//                mAdapter.setMovieList(trailerResult.getResults());
                 mTrailerListAdapter.setTrailerList(trailerResult.getResults());
-                Log.i("SUKSES", "movieDetailActivity getTrailer: ======================="+trailerResult.getResults());
             }
             @Override
             public void failure(RetrofitError error) {

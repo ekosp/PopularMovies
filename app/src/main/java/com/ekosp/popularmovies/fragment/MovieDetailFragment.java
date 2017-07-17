@@ -125,8 +125,6 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
 
      // tampilkan trailer movies
 
-
-
         mRecyclerViewForTrailers = (RecyclerView) rootView.findViewById(R.id.trailer_list);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);

@@ -1,18 +1,14 @@
 package com.ekosp.popularmovies.helper;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.ekosp.popularmovies.R;
 import com.ekosp.popularmovies.model.Trailer;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +17,8 @@ import java.util.List;
  * Created by Eko S.P on 08/07/2017.
  */
 
-public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieViewHolder> {
+public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MovieViewHolder> {
 
-
-    public List<Trailer> getTrailerList() {
-        return mTrailerList;
-    }
 
     private final List<Trailer> mTrailerList;
     private final LayoutInflater mInflater;
@@ -39,15 +31,15 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
 
-        public final ImageView mThumbnailView;
+        public final ImageView imageView;
             public MovieViewHolder(View itemView)
             {
                 super(itemView);
-                mThumbnailView = (ImageView) itemView.findViewById(R.id.trailer_thumbnail);
+                imageView = (ImageView) itemView.findViewById(R.id.imageView);
             }
         }
 
-    public TrailerAdapter(Context context, trailerCallbacks mTrailerCallbacks) {
+    public ReviewAdapter(Context context, trailerCallbacks mTrailerCallbacks) {
             this.mContext = context;
             this.mInflater = LayoutInflater.from(context);
         this.mTrailerCallbacks = mTrailerCallbacks;
@@ -57,7 +49,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.trailer_list_content, parent, false);
+                .inflate(R.layout.row_movie, parent, false);
 
         return new MovieViewHolder(view);
     }
@@ -65,24 +57,19 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
     @Override
     public void onBindViewHolder(final MovieViewHolder holder, int position)
     {
-        final Trailer trailer = mTrailerList.get(position);
-        //final Context context = holder.mThumbnailView.getContext();
-        String thumbnailUrl = "http://img.youtube.com/vi/" + trailer.getKey() + "/0.jpg";
-
-        Picasso.with(mContext)
-                .load(thumbnailUrl)
-                .config(Bitmap.Config.RGB_565)
-                .into(holder.mThumbnailView);
-
+        Trailer trailer = mTrailerList.get(position);
+      /*  Picasso.with(mContext)
+                .load(trailer.getPoster())
+                .placeholder(R.color.colorPrimary)
+                .into(holder.imageView);
+*/
         // add onclick
-        holder.mThumbnailView.setOnClickListener(new View.OnClickListener() {
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                  int pos = holder.getAdapterPosition();
-                Log.i("TrailerAdapter","pos: "+pos);
                 Trailer trailer = mTrailerList.get(pos);
-                Toast.makeText(mContext, "url youtube trailer key :"+trailer.getKey(), Toast.LENGTH_SHORT).show();
-                //Log.i("TrailerAdapter","trailer: "+mTrailerList.toArray());
-                //mTrailerCallbacks.open(trailer);
+                mTrailerCallbacks.open(trailer);
+
             }
         });
     }
@@ -93,7 +80,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
         return (mTrailerList == null) ? 0 : mTrailerList.size();
     }
 
-    public void setTrailerList(List<Trailer> trailerList)
+    public void setMovieList(List<Trailer> trailerList)
     {
         this.mTrailerList.clear();
         this.mTrailerList.addAll(trailerList);

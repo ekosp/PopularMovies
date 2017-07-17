@@ -77,7 +77,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                  int pos = holder.getAdapterPosition();
                 Movie movie = mMovieList.get(pos);
                 mMovieCallbacks.open(movie);
-
             }
         });
     }
