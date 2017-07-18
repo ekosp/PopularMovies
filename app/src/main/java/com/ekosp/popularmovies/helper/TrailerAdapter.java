@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.ekosp.popularmovies.R;
 import com.ekosp.popularmovies.model.Trailer;
@@ -28,10 +27,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
         return mTrailerList;
     }
 
-    private final List<Trailer> mTrailerList;
-    private final LayoutInflater mInflater;
-    private final Context mContext;
-    private final trailerCallbacks mTrailerCallbacks;
+    public final List<Trailer> mTrailerList;
+    public final LayoutInflater mInflater;
+    public final Context mContext;
+    public final trailerCallbacks mTrailerCallbacks;
 
     public interface trailerCallbacks {
         void open(Trailer trailer);
@@ -45,6 +44,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
                 super(itemView);
                 mThumbnailView = (ImageView) itemView.findViewById(R.id.trailer_thumbnail);
             }
+
         }
 
     public TrailerAdapter(Context context, trailerCallbacks mTrailerCallbacks) {
@@ -66,7 +66,9 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
     public void onBindViewHolder(final MovieViewHolder holder, int position)
     {
         final Trailer trailer = mTrailerList.get(position);
-        //final Context context = holder.mThumbnailView.getContext();
+        final Context context = holder.mThumbnailView.getContext();
+
+
         String thumbnailUrl = "http://img.youtube.com/vi/" + trailer.getKey() + "/0.jpg";
 
         Picasso.with(mContext)
@@ -80,9 +82,9 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
                  int pos = holder.getAdapterPosition();
                 Log.i("TrailerAdapter","pos: "+pos);
                 Trailer trailer = mTrailerList.get(pos);
-                Toast.makeText(mContext, "url youtube trailer key :"+trailer.getKey(), Toast.LENGTH_SHORT).show();
-                //Log.i("TrailerAdapter","trailer: "+mTrailerList.toArray());
-                //mTrailerCallbacks.open(trailer);
+                Log.i("TrailerAdapter","trailer: "+trailer.getTrailerUrl());
+                mTrailerCallbacks.open(trailer);
+
             }
         });
     }

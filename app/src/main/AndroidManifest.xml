@@ -25,6 +25,11 @@
         <activity
             android:name=".activity.MovieDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name=".data.MoviesProvider"
+            android:authorities="com.ekosp.popularmovies" />
+
     </application>
 
 </manifest>

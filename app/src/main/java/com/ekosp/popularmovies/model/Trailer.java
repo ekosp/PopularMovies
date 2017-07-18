@@ -95,6 +95,11 @@ public class Trailer implements Parcelable {
         this.type = type;
     }
 
+    public String getTrailerUrl() {
+        return "http://www.youtube.com/watch?v=" + key;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;

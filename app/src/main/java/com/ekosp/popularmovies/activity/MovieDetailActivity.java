@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ekosp.popularmovies.BuildConfig;
 import com.ekosp.popularmovies.R;
@@ -66,4 +67,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
 
+   /* @Override
+    public void open(Trailer trailer) {
+        Toast.makeText(this, "asdasdasdasdasdadasdasdasd", Toast.LENGTH_SHORT).show();
+    }*/
 }

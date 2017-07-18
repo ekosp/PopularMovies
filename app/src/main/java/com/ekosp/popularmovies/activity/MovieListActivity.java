@@ -20,6 +20,7 @@ import com.ekosp.popularmovies.helper.MoviesAdapter;
 import com.ekosp.popularmovies.model.Movie;
 
 import static com.ekosp.popularmovies.R.id.recyclerView;
+import static java.security.AccessController.getContext;
 
 
 public class MovieListActivity extends AppCompatActivity implements MoviesAdapter.movieCallbacks {
@@ -106,8 +107,10 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
                 item.setChecked(true);
                 break;
             case R.id.sort_by_favorites:
-                fetchHelper.fetchMovies(FAVORITES);
+               // fetchHelper.fetchMovies(FAVORITES);
                 item.setChecked(true);
+
+              //  getContentResolver().query();
                 break;
             default:
                 break;
