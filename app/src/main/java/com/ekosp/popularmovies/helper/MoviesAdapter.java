@@ -48,8 +48,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         }
 
     public MoviesAdapter(Context context, movieCallbacks mMovieCallbacks) {
-            this.mContext = context;
-            this.mInflater = LayoutInflater.from(context);
+        this.mContext = context;
+        this.mInflater = LayoutInflater.from(context);
         this.mMovieCallbacks = mMovieCallbacks;
         this.mMovieList = new ArrayList<>();
     }

@@ -128,13 +128,13 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
 
         updateRatingBar();
         updateFavoriteButtons();
-     // tampilkan trailer movies
 
+        // tampilkan trailer movies
         mRecyclerViewForTrailers = (RecyclerView) rootView.findViewById(R.id.trailer_list);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerViewForTrailers.setLayoutManager(layoutManager);
-        mTrailerListAdapter = new TrailerAdapter(getContext(), null); // diisi apa yaaa?
+        mTrailerListAdapter = new TrailerAdapter(getContext(), this); // diisi apa yaaa?
 
         mRecyclerViewForTrailers.setAdapter(mTrailerListAdapter);
         mRecyclerViewForTrailers.setNestedScrollingEnabled(false);
@@ -172,9 +172,9 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
     }
 
    @Override
-    public void open(Trailer trailer) {
-        Toast.makeText(getContext(), "buka trailer dari movie id :"+idku, Toast.LENGTH_SHORT).show();
-    }
+   public void open(String url) {
+       Toast.makeText(getContext(), "buka trailer dari movie, url :"+url, Toast.LENGTH_SHORT).show();
+   }
 
     public void markAsFavorite() {
 

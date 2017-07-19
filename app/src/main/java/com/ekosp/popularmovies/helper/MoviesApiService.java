@@ -24,5 +24,8 @@ public interface MoviesApiService {
     @GET("/movie/{id}/videos")
     void getTrailerMovies(@Path("id") long movieId, Callback<Trailer.TrailerResult> callback );
 
+    @GET("/movie/{id}/reviews")
+    void getReviewMovies(@Path("id") long movieId, Callback<Trailer.TrailerResult> callback );
+
 
 }

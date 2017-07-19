@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ekosp.popularmovies.R;
+import com.ekosp.popularmovies.model.Review;
 import com.ekosp.popularmovies.model.Trailer;
 
 import java.util.ArrayList;
@@ -17,73 +19,74 @@ import java.util.List;
  * Created by Eko S.P on 08/07/2017.
  */
 
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MovieViewHolder> {
+public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
-
-    private final List<Trailer> mTrailerList;
+    private final List<Review> mReviewList;
     private final LayoutInflater mInflater;
     private final Context mContext;
-    private final trailerCallbacks mTrailerCallbacks;
+    private final reviewCallbacks mReviewCallbacks;
 
-    public interface trailerCallbacks {
-        void open(Trailer trailer);
+    public interface reviewCallbacks {
+        void open(Review review);
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder {
+    public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
-        public final ImageView imageView;
-            public MovieViewHolder(View itemView)
+        public final TextView mContentView;
+        public final TextView mAuthorView;
+
+        public ReviewViewHolder(View itemView)
             {
                 super(itemView);
-                imageView = (ImageView) itemView.findViewById(R.id.imageView);
-            }
+                mContentView = (TextView) itemView.findViewById(R.id.review_content);
+                mAuthorView = (TextView) itemView.findViewById(R.id.review_author);
         }
+    }
 
-    public ReviewAdapter(Context context, trailerCallbacks mTrailerCallbacks) {
-            this.mContext = context;
-            this.mInflater = LayoutInflater.from(context);
-        this.mTrailerCallbacks = mTrailerCallbacks;
-        this.mTrailerList = new ArrayList<>();
+    public ReviewAdapter(Context context, reviewCallbacks mReviewCallbacks) {
+        this.mReviewList = new ArrayList<>();
+        this.mContext = context;
+        this.mInflater = LayoutInflater.from(context);
+        this.mReviewCallbacks = mReviewCallbacks;
+
     }
 
     @Override
-    public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ReviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_movie, parent, false);
+                .inflate(R.layout.review_list_content, parent, false);
 
-        return new MovieViewHolder(view);
+        return new ReviewViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final MovieViewHolder holder, int position)
+    public void onBindViewHolder(final ReviewViewHolder holder, int position)
     {
-        Trailer trailer = mTrailerList.get(position);
-      /*  Picasso.with(mContext)
-                .load(trailer.getPoster())
-                .placeholder(R.color.colorPrimary)
-                .into(holder.imageView);
-*/
+        final Review review = mReviewList.get(position);
+        holder.mContentView.setText(review.getmContent());
+        holder.mAuthorView.setText(review.getmAuthor());
+
         // add onclick
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
+      /*  holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                  int pos = holder.getAdapterPosition();
                 Trailer trailer = mTrailerList.get(pos);
                 mTrailerCallbacks.open(trailer);
 
             }
-        });
+        });*/
     }
 
     @Override
     public int getItemCount()
     {
-        return (mTrailerList == null) ? 0 : mTrailerList.size();
+        return (mReviewList == null) ? 0 : mReviewList.size();
     }
 
-    public void setMovieList(List<Trailer> trailerList)
+    public void setReviewList(List<Review> reviewList)
     {
-        this.mTrailerList.clear();
-        this.mTrailerList.addAll(trailerList);
+        this.mReviewList.clear();
+        this.mReviewList.addAll(reviewList);
         notifyDataSetChanged();
     }
 
