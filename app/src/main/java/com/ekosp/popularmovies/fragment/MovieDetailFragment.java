@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,35 +21,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ekosp.popularmovies.BuildConfig;
 import com.ekosp.popularmovies.activity.MovieDetailActivity;
 import com.ekosp.popularmovies.R;
 import com.ekosp.popularmovies.data.MovieContract;
 import com.ekosp.popularmovies.helper.FetchHelper;
-import com.ekosp.popularmovies.helper.MoviesAdapter;
-import com.ekosp.popularmovies.helper.MoviesApiService;
+import com.ekosp.popularmovies.helper.ReviewAdapter;
 import com.ekosp.popularmovies.helper.TrailerAdapter;
 import com.ekosp.popularmovies.model.Movie;
-import com.ekosp.popularmovies.model.Trailer;
+import com.ekosp.popularmovies.model.Review;
 import com.ekosp.popularmovies.model.Trailer;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
-
-import retrofit.Callback;
-import retrofit.RequestInterceptor;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-import static com.ekosp.popularmovies.R.id.recyclerView;
 
 public class MovieDetailFragment extends Fragment implements TrailerAdapter.trailerCallbacks {
 
@@ -60,12 +46,14 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
     public Movie mMovie;
     public TextView mMovieRatingView;
     private TrailerAdapter mTrailerListAdapter;
+    private ReviewAdapter mReviewAdapter;
     public long idku =0;
     public FetchHelper fetchHelper;
     public Button mButtonMarkAsFavorite, mButtonRemoveFromFavorites;
 
     RecyclerView mRecyclerViewForTrailers;
-   // private FetchTrailers fetchTrailers;
+    RecyclerView mRecycleViewForReviews;
+    // private FetchTrailers fetchTrailers;
 
     public MovieDetailFragment() {
     }
@@ -118,7 +106,7 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
         mMovieOverviewView.setText(mMovie.getOverview());
 
         //mMovieReleaseDateView.setText(getCustomDate(mMovie.getReleaseDate()));
-        mMovieReleaseDateView.setText(mMovie.getReleaseDate());
+        mMovieReleaseDateView.setText(customDate(mMovie.getReleaseDate()));
         ImageView mMoviePosterView = (ImageView) rootView.findViewById(R.id.movie_poster);
 
         Picasso.with(getContext())
@@ -130,7 +118,7 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
         updateFavoriteButtons();
 
         // tampilkan trailer movies
-        mRecyclerViewForTrailers = (RecyclerView) rootView.findViewById(R.id.trailer_list);
+       mRecyclerViewForTrailers = (RecyclerView) rootView.findViewById(R.id.trailer_list);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerViewForTrailers.setLayoutManager(layoutManager);
@@ -147,6 +135,21 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
             fetchHelper = new FetchHelper();
             fetchHelper.setmTrailerListAdapter(mTrailerListAdapter);
             fetchHelper.fetchTrailer(mMovie.getId() );
+        }
+
+        // tampilkan review movie
+        mRecycleViewForReviews = (RecyclerView) rootView.findViewById(R.id.review_list);
+        mReviewAdapter = new ReviewAdapter(getContext(), null);
+        mRecycleViewForReviews.setAdapter(mReviewAdapter);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(PARAM_REVIEWS)) {
+            List<Review> reviews = savedInstanceState.getParcelableArrayList(PARAM_REVIEWS);
+            mReviewAdapter.setReviewList(reviews);
+            //mButtonWatchTrailer.setEnabled(true);
+        } else {
+            fetchHelper = new FetchHelper();
+            fetchHelper.setmReviewListAdapter(mReviewAdapter);
+            fetchHelper.fetchReview(mMovie.getId() );
         }
 
         return rootView;
@@ -171,10 +174,10 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
         }
     }
 
-   @Override
-   public void open(String url) {
-       Toast.makeText(getContext(), "buka trailer dari movie, url :"+url, Toast.LENGTH_SHORT).show();
-   }
+    @Override
+    public void open(String url) {
+        Toast.makeText(getContext(), "buka trailer dari movie, url :"+url, Toast.LENGTH_SHORT).show();
+    }
 
     public void markAsFavorite() {
 
@@ -295,5 +298,21 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
                 updateFavoriteButtons();
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private String customDate (String actual_date){
+        SimpleDateFormat month_date = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date date = null;
+        try {
+            date = sdf.parse(actual_date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return month_date.format(date);
+       // System.out.println("Month :" + month_name);  //Mar 2016
+       // return null;
     }
 }

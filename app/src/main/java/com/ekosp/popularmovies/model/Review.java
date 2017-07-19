@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by eko.purnomo on 12/07/2017.
  * You can contact me at : ekosetyopurnomo@gmail.com
@@ -84,5 +86,14 @@ public class Review implements Parcelable {
         dest.writeString(mAuthor);
         dest.writeString(mContent);
         dest.writeString(mUrl);
+    }
+
+    public class ReviewsResult {
+
+        private List<Review> results;
+
+        public List<Review> getResults() {
+            return results;
+        }
     }
 }

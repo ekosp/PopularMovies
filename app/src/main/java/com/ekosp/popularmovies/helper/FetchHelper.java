@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.ekosp.popularmovies.BuildConfig;
 import com.ekosp.popularmovies.model.Movie;
+import com.ekosp.popularmovies.model.Review;
 import com.ekosp.popularmovies.model.Trailer;
 
 import java.util.Collection;
@@ -29,6 +30,15 @@ public class FetchHelper {
     private final static String FAVORITES = "favotires";
     private TrailerAdapter mTrailerListAdapter;
     private MoviesAdapter mAdapter;
+    private ReviewAdapter mReviewListAdapter;
+
+    public ReviewAdapter getmReviewListAdapter() {
+        return mReviewListAdapter;
+    }
+
+    public void setmReviewListAdapter(ReviewAdapter mReviewListAdapter) {
+        this.mReviewListAdapter = mReviewListAdapter;
+    }
 
     public TrailerAdapter getmTrailerListAdapter() {
         return mTrailerListAdapter;
@@ -234,6 +244,33 @@ public class FetchHelper {
             //filem.add
             mAdapter.setMovieList(filem);
         }
+    }
+
+    public void fetchReview(final long movieId) {
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint("http://api.themoviedb.org/3")
+                .setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestFacade request) {
+                        request.addEncodedQueryParam("api_key", BuildConfig.THE_MOVIE_DATABASE_API_KEY);
+                    }
+                })
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build();
+
+
+        MoviesApiService service = restAdapter.create(MoviesApiService.class);
+        service.getReviewMovies( movieId, new Callback<Review.ReviewsResult>() {
+            @Override
+            public void success(Review.ReviewsResult reviewsResult, Response response) {
+                mReviewListAdapter.setReviewList(reviewsResult.getResults());
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                error.printStackTrace();
+            }
+        });
     }
 
 }

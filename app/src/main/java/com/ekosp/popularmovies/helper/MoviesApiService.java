@@ -1,6 +1,7 @@
 package com.ekosp.popularmovies.helper;
 
 import com.ekosp.popularmovies.model.Movie;
+import com.ekosp.popularmovies.model.Review;
 import com.ekosp.popularmovies.model.Trailer;
 
 import retrofit.Callback;
@@ -25,7 +26,7 @@ public interface MoviesApiService {
     void getTrailerMovies(@Path("id") long movieId, Callback<Trailer.TrailerResult> callback );
 
     @GET("/movie/{id}/reviews")
-    void getReviewMovies(@Path("id") long movieId, Callback<Trailer.TrailerResult> callback );
+    void getReviewMovies(@Path("id") long movieId, Callback<Review.ReviewsResult> callback );
 
 
 }

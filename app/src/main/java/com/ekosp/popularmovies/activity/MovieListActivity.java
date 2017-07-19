@@ -20,7 +20,6 @@ import com.ekosp.popularmovies.helper.MoviesAdapter;
 import com.ekosp.popularmovies.model.Movie;
 
 import static com.ekosp.popularmovies.R.id.recyclerView;
-import static java.security.AccessController.getContext;
 
 
 public class MovieListActivity extends AppCompatActivity implements MoviesAdapter.movieCallbacks {
