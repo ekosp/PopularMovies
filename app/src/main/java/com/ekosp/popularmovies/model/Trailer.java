@@ -7,9 +7,13 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Trailer implements Parcelable {
+/**
+ * Created by Eko S.P.
+ * You can contact me at : ekosetyopurnomo@gmail.com
+ * or for more detail at  : http://ekosp.com
+ */
 
-    //private static final String TMDB_IMAGE_PATH = "http://image.tmdb.org/t/p/w500";
+public class Trailer implements Parcelable {
 
     @SerializedName("id")
     private String id;

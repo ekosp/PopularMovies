@@ -5,8 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Manages a local database for movies data.
+ * Created by Eko S.P.
+ * You can contact me at : ekosetyopurnomo@gmail.com
+ * or for more detail at  : http://ekosp.com
  */
+
 class MoviesDBHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 3;

@@ -9,10 +9,16 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+/**
+ * Created by Eko S.P.
+ * You can contact me at : ekosetyopurnomo@gmail.com
+ * or for more detail at  : http://ekosp.com
+ */
+
 public class MoviesProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private static final int MOVIES = 300;
+    private static final int MOVIES = 100;
     private MoviesDBHelper mOpenHelper;
 
     private static UriMatcher buildUriMatcher() {

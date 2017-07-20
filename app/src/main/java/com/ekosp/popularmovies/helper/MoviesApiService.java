@@ -9,7 +9,7 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 
 /**
- * Created by Eko S.P on 01/07/2017.
+ * Created by Eko S.P.
  * You can contact me at : ekosetyopurnomo@gmail.com
  * or for more detail at  : http://ekosp.com
  */

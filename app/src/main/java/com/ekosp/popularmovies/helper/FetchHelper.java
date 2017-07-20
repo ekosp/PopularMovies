@@ -20,14 +20,15 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * Created by Eko S.P on 13/07/2017.
+ * Created by Eko S.P.
+ * You can contact me at : ekosetyopurnomo@gmail.com
+ * or for more detail at  : http://ekosp.com
  */
 
 public class FetchHelper {
 
     private final static String MOST_POPULAR = "popular";
     private final static String HIGHEST_RATED = "top_rated";
-    private final static String FAVORITES = "favorites";
     private TrailerAdapter mTrailerListAdapter;
     private MoviesAdapter mAdapter;
     private ReviewAdapter mReviewListAdapter;

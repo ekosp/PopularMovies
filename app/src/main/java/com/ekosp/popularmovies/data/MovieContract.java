@@ -5,6 +5,12 @@ import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+/**
+ * Created by Eko S.P.
+ * You can contact me at : ekosetyopurnomo@gmail.com
+ * or for more detail at  : http://ekosp.com
+ */
+
 public class MovieContract {
 
     public static final String CONTENT_AUTHORITY = "com.ekosp.popularmovies";

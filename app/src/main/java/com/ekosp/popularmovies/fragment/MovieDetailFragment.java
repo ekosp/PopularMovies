@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ekosp.popularmovies.activity.MovieDetailActivity;
 import com.ekosp.popularmovies.R;
@@ -43,6 +42,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Created by Eko S.P.
+ * You can contact me at : ekosetyopurnomo@gmail.com
+ * or for more detail at  : http://ekosp.com
+ */
+
 public class MovieDetailFragment extends Fragment implements TrailerAdapter.trailerCallbacks {
 
     public static final String PARAM_MOVIE = "PARAM_MOVIE";
@@ -52,7 +57,7 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
     private TextView mMovieRatingView;
     private TrailerAdapter mTrailerListAdapter;
     private ReviewAdapter mReviewAdapter;
-    private Button mButtonMarkAsFavorite, mButtonRemoveFromFavorites;
+    private Button mButtonAddFavorite, mButtonRemoveFavorites;
 
     public MovieDetailFragment() {
     }
@@ -97,8 +102,8 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
         TextView mMovieReleaseDateView = (TextView) rootView.findViewById(R.id.movie_release_date);
         mMovieRatingView = (TextView) rootView.findViewById(R.id.movie_user_rating);
 
-        mButtonMarkAsFavorite = (Button) rootView.findViewById(R.id.button_mark_as_favorite);
-        mButtonRemoveFromFavorites = (Button) rootView.findViewById(R.id.button_remove_from_favorites);
+        mButtonAddFavorite = (Button) rootView.findViewById(R.id.button_mark_as_favorite);
+        mButtonRemoveFavorites = (Button) rootView.findViewById(R.id.button_remove_from_favorites);
 
         mMovieTitleView.setText(mMovie.getTitle());
         mMovieOverviewView.setText(mMovie.getOverview());
@@ -257,16 +262,16 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
             @Override
             protected void onPostExecute(Boolean isFavorite) {
                 if (isFavorite) {
-                    mButtonRemoveFromFavorites.setVisibility(View.VISIBLE);
-                    mButtonMarkAsFavorite.setVisibility(View.GONE);
+                    mButtonRemoveFavorites.setVisibility(View.VISIBLE);
+                    mButtonAddFavorite.setVisibility(View.GONE);
                 } else {
-                    mButtonMarkAsFavorite.setVisibility(View.VISIBLE);
-                    mButtonRemoveFromFavorites.setVisibility(View.GONE);
+                    mButtonAddFavorite.setVisibility(View.VISIBLE);
+                    mButtonRemoveFavorites.setVisibility(View.GONE);
                 }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        mButtonMarkAsFavorite.setOnClickListener(
+        mButtonAddFavorite.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -274,7 +279,7 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
                     }
                 });
 
-        mButtonRemoveFromFavorites.setOnClickListener(
+        mButtonRemoveFavorites.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

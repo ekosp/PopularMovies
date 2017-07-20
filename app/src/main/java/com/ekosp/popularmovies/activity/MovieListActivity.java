@@ -27,6 +27,11 @@ import com.ekosp.popularmovies.model.Movie;
 import static com.ekosp.popularmovies.R.id.recyclerView;
 import static com.ekosp.popularmovies.helper.FetchHelper.calculateNoOfColumns;
 
+/**
+ * Created by Eko S.P.
+ * You can contact me at : ekosetyopurnomo@gmail.com
+ * or for more detail at  : http://ekosp.com
+ */
 
 public class MovieListActivity extends AppCompatActivity implements MoviesAdapter.movieCallbacks,
         LoaderManager.LoaderCallbacks<Cursor>{
@@ -35,7 +40,7 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
     private final static String HIGHEST_RATED = "top_rated";
     private final static String FAVORITES = "favorites";
     private final String mSortBy = MOST_POPULAR;
-    private static final int FAVORITE_MOVIES_LOADER = 0;
+    private static final int FAVORITE_LOADER = 0;
     private FetchHelper fetchHelper;
 
     @Override
@@ -106,12 +111,12 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_by_top_rated:
-                getSupportLoaderManager().destroyLoader(FAVORITE_MOVIES_LOADER);
+                getSupportLoaderManager().destroyLoader(FAVORITE_LOADER);
                 fetchHelper.fetchMovies(HIGHEST_RATED);
                 item.setChecked(true);
                 break;
             case R.id.sort_by_most_popular:
-                getSupportLoaderManager().destroyLoader(FAVORITE_MOVIES_LOADER);
+                getSupportLoaderManager().destroyLoader(FAVORITE_LOADER);
                 fetchHelper.fetchMovies(MOST_POPULAR);
                 item.setChecked(true);
                 break;
@@ -129,7 +134,7 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
     }
 
     private void loadFavoriteFromProvider() {
-        getSupportLoaderManager().initLoader(FAVORITE_MOVIES_LOADER, null, this);
+        getSupportLoaderManager().initLoader(FAVORITE_LOADER, null, this);
     }
 
     @Override
