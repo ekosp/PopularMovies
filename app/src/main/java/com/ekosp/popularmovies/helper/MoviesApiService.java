@@ -14,7 +14,7 @@ import retrofit.http.Path;
  * or for more detail at  : http://ekosp.com
  */
 
-public interface MoviesApiService {
+interface MoviesApiService {
 
     @GET("/movie/popular")
     void getPopularMovies(Callback<Movie.MovieResult> callback);

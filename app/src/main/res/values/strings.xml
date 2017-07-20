@@ -8,10 +8,8 @@
     <string name="user_rating_movie">%1$s/10</string>
     <string name="user_rating">Rating</string>
     <string name="title_movie_list">Popular Movies</string>
-    <string name="share_trailer">Share trailer</string>
     <string name="favorites">Favorites</string>
     <string name="add_to_favorites">Mark as favorite</string>
-    <string name="watch_trailer">Watch trailer</string>
     <string name="remove_from_favorites">Remove from favorites</string>
-
+    <string name="share_title">Share</string>
 </resources>

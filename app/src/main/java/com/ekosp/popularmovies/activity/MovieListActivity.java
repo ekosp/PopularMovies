@@ -2,8 +2,12 @@ package com.ekosp.popularmovies.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,21 +18,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.ekosp.popularmovies.R;
+import com.ekosp.popularmovies.data.MovieContract;
 import com.ekosp.popularmovies.fragment.MovieDetailFragment;
 import com.ekosp.popularmovies.helper.FetchHelper;
 import com.ekosp.popularmovies.helper.MoviesAdapter;
 import com.ekosp.popularmovies.model.Movie;
 
 import static com.ekosp.popularmovies.R.id.recyclerView;
+import static com.ekosp.popularmovies.helper.FetchHelper.calculateNoOfColumns;
 
 
-public class MovieListActivity extends AppCompatActivity implements MoviesAdapter.movieCallbacks {
+public class MovieListActivity extends AppCompatActivity implements MoviesAdapter.movieCallbacks,
+        LoaderManager.LoaderCallbacks<Cursor>{
 
-    private MoviesAdapter mAdapter;
     private final static String MOST_POPULAR = "popular";
     private final static String HIGHEST_RATED = "top_rated";
-    private final static String FAVORITES = "favotires";
+    private final static String FAVORITES = "favorites";
     private final String mSortBy = MOST_POPULAR;
+    private static final int FAVORITE_MOVIES_LOADER = 0;
     private FetchHelper fetchHelper;
 
     @Override
@@ -64,8 +71,9 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
         }
 
         mRecyclerView = (RecyclerView) findViewById(recyclerView);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        mAdapter = new MoviesAdapter(this, this);
+        int mNoOfColumns = calculateNoOfColumns(getApplicationContext());
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, mNoOfColumns));
+        MoviesAdapter mAdapter = new MoviesAdapter(this, this);
 
         mRecyclerView.setAdapter(mAdapter);
 
@@ -98,15 +106,18 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_by_top_rated:
+                getSupportLoaderManager().destroyLoader(FAVORITE_MOVIES_LOADER);
                 fetchHelper.fetchMovies(HIGHEST_RATED);
                 item.setChecked(true);
                 break;
             case R.id.sort_by_most_popular:
+                getSupportLoaderManager().destroyLoader(FAVORITE_MOVIES_LOADER);
                 fetchHelper.fetchMovies(MOST_POPULAR);
                 item.setChecked(true);
                 break;
             case R.id.sort_by_favorites:
                // fetchHelper.fetchMovies(FAVORITES);
+                loadFavoriteFromProvider();
                 item.setChecked(true);
 
               //  getContentResolver().query();
@@ -117,10 +128,39 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
         return super.onOptionsItemSelected(item);
     }
 
+    private void loadFavoriteFromProvider() {
+        getSupportLoaderManager().initLoader(FAVORITE_MOVIES_LOADER, null, this);
+    }
+
     @Override
     public void open (Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(MovieDetailFragment.PARAM_MOVIE, movie);
         startActivity(intent);
     }
+
+
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this,
+                MovieContract.MovieEntry.CONTENT_URI,
+                MovieContract.MovieEntry.MOVIE_COLUMNS,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        fetchHelper.fetchFavorite(data);
+    }
+
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+        // do nothing
+    }
+
+
 }

@@ -1,9 +1,12 @@
 package com.ekosp.popularmovies.fragment;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -14,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -34,6 +38,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -41,19 +46,13 @@ import java.util.Locale;
 public class MovieDetailFragment extends Fragment implements TrailerAdapter.trailerCallbacks {
 
     public static final String PARAM_MOVIE = "PARAM_MOVIE";
-    public static final String PARAM_TRAILERS = "PARAM_TRAILERS";
-    public static final String PARAM_REVIEWS = "PARAM_REVIEWS";
-    public Movie mMovie;
-    public TextView mMovieRatingView;
+    private static final String PARAM_TRAILERS = "PARAM_TRAILERS";
+    private static final String PARAM_REVIEWS = "PARAM_REVIEWS";
+    private Movie mMovie;
+    private TextView mMovieRatingView;
     private TrailerAdapter mTrailerListAdapter;
     private ReviewAdapter mReviewAdapter;
-    public long idku =0;
-    public FetchHelper fetchHelper;
-    public Button mButtonMarkAsFavorite, mButtonRemoveFromFavorites;
-
-    RecyclerView mRecyclerViewForTrailers;
-    RecyclerView mRecycleViewForReviews;
-    // private FetchTrailers fetchTrailers;
+    private Button mButtonMarkAsFavorite, mButtonRemoveFromFavorites;
 
     public MovieDetailFragment() {
     }
@@ -98,14 +97,12 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
         TextView mMovieReleaseDateView = (TextView) rootView.findViewById(R.id.movie_release_date);
         mMovieRatingView = (TextView) rootView.findViewById(R.id.movie_user_rating);
 
-        //Buttom mButtonWatchTrailer = (Buttom) rootView.findViewById(R.id.)
         mButtonMarkAsFavorite = (Button) rootView.findViewById(R.id.button_mark_as_favorite);
         mButtonRemoveFromFavorites = (Button) rootView.findViewById(R.id.button_remove_from_favorites);
 
         mMovieTitleView.setText(mMovie.getTitle());
         mMovieOverviewView.setText(mMovie.getOverview());
 
-        //mMovieReleaseDateView.setText(getCustomDate(mMovie.getReleaseDate()));
         mMovieReleaseDateView.setText(customDate(mMovie.getReleaseDate()));
         ImageView mMoviePosterView = (ImageView) rootView.findViewById(R.id.movie_poster);
 
@@ -118,19 +115,19 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
         updateFavoriteButtons();
 
         // tampilkan trailer movies
-       mRecyclerViewForTrailers = (RecyclerView) rootView.findViewById(R.id.trailer_list);
+        RecyclerView mRecyclerViewForTrailers = (RecyclerView) rootView.findViewById(R.id.trailer_list);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerViewForTrailers.setLayoutManager(layoutManager);
-        mTrailerListAdapter = new TrailerAdapter(getContext(), this); // diisi apa yaaa?
+        mTrailerListAdapter = new TrailerAdapter(getContext(), this);
 
         mRecyclerViewForTrailers.setAdapter(mTrailerListAdapter);
         mRecyclerViewForTrailers.setNestedScrollingEnabled(false);
 
+        FetchHelper fetchHelper;
         if (savedInstanceState != null && savedInstanceState.containsKey(PARAM_TRAILERS)) {
             List<Trailer> trailers = savedInstanceState.getParcelableArrayList(PARAM_TRAILERS);
             mTrailerListAdapter.setTrailerList(trailers);
-            //mButtonWatchTrailer.setEnabled(true);
         } else {
             fetchHelper = new FetchHelper();
             fetchHelper.setmTrailerListAdapter(mTrailerListAdapter);
@@ -138,14 +135,13 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
         }
 
         // tampilkan review movie
-        mRecycleViewForReviews = (RecyclerView) rootView.findViewById(R.id.review_list);
-        mReviewAdapter = new ReviewAdapter(getContext(), null);
+        RecyclerView mRecycleViewForReviews = (RecyclerView) rootView.findViewById(R.id.review_list);
+        mReviewAdapter = new ReviewAdapter(getContext());
         mRecycleViewForReviews.setAdapter(mReviewAdapter);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(PARAM_REVIEWS)) {
             List<Review> reviews = savedInstanceState.getParcelableArrayList(PARAM_REVIEWS);
             mReviewAdapter.setReviewList(reviews);
-            //mButtonWatchTrailer.setEnabled(true);
         } else {
             fetchHelper = new FetchHelper();
             fetchHelper.setmReviewListAdapter(mReviewAdapter);
@@ -156,12 +152,26 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
     }
 
     @Override
-    public void onSaveInstanceState(Bundle saveInstanceState) {
-        super.onSaveInstanceState(saveInstanceState);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        List<Trailer> trailers = mTrailerListAdapter.getTrailerList();
+        ArrayList<Trailer> alTrailers = new ArrayList<>(trailers.size());
+        alTrailers.addAll(trailers);
+        if (!trailers.isEmpty()) {
+            outState.putParcelableArrayList (PARAM_TRAILERS, alTrailers);
+        }
+
+        List<Review> reviews = mReviewAdapter.getmReviewList();
+        ArrayList<Review> alReviews = new ArrayList<>(reviews.size());
+        alReviews.addAll(reviews);
+        if (!reviews.isEmpty()) {
+            outState.putParcelableArrayList(PARAM_REVIEWS, alReviews);
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+       inflater.inflate(R.menu.action_menu, menu);
     }
 
     private void updateRatingBar() {
@@ -175,14 +185,19 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
     }
 
     @Override
-    public void open(String url) {
-        Toast.makeText(getContext(), "buka trailer dari movie, url :"+url, Toast.LENGTH_SHORT).show();
+    public void open(Trailer trailer) {
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+trailer.getKey()));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(trailer.getTrailerUrl()));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex){
+            startActivity(webIntent);
+        }
     }
 
-    public void markAsFavorite() {
+    private void markAsFavorite() {
 
         new AsyncTask<Void, Void, Void>() {
-
             @Override
             protected Void doInBackground(Void... params) {
                 if (!isFavorite()) {
@@ -233,9 +248,7 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
     }
 
     private void updateFavoriteButtons() {
-        // Needed to avoid "skip frames".
-        new AsyncTask<Void, Void, Boolean>() {
-
+       new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
                 return isFavorite();
@@ -261,16 +274,6 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
                     }
                 });
 
-       /* mButtonWatchTrailer.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mTrailerListAdapter.getItemCount() > 0) {
-                            watch(mTrailerListAdapter.getTrailers().get(0), 0);
-                        }
-                    }
-                });
-*/
         mButtonRemoveFromFavorites.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -280,7 +283,7 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
                 });
     }
 
-    public void removeFromFavorites() {
+    private void removeFromFavorites() {
         new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -301,18 +304,38 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
     }
 
     private String customDate (String actual_date){
-        SimpleDateFormat month_date = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat month_date = new SimpleDateFormat("dd MMM yyyy", Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
-        Date date = null;
+        Date date;
         try {
             date = sdf.parse(actual_date);
         } catch (ParseException e) {
             e.printStackTrace();
+            return actual_date;
         }
 
         return month_date.format(date);
-       // System.out.println("Month :" + month_name);  //Mar 2016
-       // return null;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.share:
+                //get 1st trailer
+                Trailer tr = mTrailerListAdapter.getTrailerList().get(0);
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMovie.getTitle());
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, tr.getName() + ": "
+                        + tr.getTrailerUrl());
+                startActivity(Intent.createChooser(sharingIntent, "Shearing Option"));
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
 }

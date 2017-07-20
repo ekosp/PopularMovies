@@ -25,7 +25,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/button_vertical_margin"
         android:text="@string/add_to_favorites"
-        android:theme="@style/Button.Red"
+        android:background="@color/black"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        style="@android:style/ButtonBar"
         android:visibility="visible" />
 
     <Button
@@ -34,7 +37,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/button_vertical_margin"
         android:text="@string/remove_from_favorites"
-        android:theme="@style/Button.Red"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        style="@android:style/ButtonBar"
         android:visibility="gone" />
 
 </LinearLayout>

@@ -3,7 +3,6 @@ package com.ekosp.popularmovies.helper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,13 +26,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
         return mTrailerList;
     }
 
-    public final List<Trailer> mTrailerList;
-    public final LayoutInflater mInflater;
-    public final Context mContext;
-    public final trailerCallbacks mTrailerCallbacks;
+    private final List<Trailer> mTrailerList;
+    private final Context mContext;
+    private final trailerCallbacks mTrailerCallbacks;
 
     public interface trailerCallbacks {
-       void open(String url);
+       void open(Trailer trailer);
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -48,7 +46,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
 
     public TrailerAdapter(Context context, trailerCallbacks mTrailerCallbacks) {
             this.mContext = context;
-            this.mInflater = LayoutInflater.from(context);
+        LayoutInflater mInflater = LayoutInflater.from(context);
         this.mTrailerCallbacks = mTrailerCallbacks;
         this.mTrailerList = new ArrayList<>();
     }
@@ -74,7 +72,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
             @Override public void onClick(View v) {
                  int pos = holder.getAdapterPosition();
                 Trailer trailer = mTrailerList.get(pos);
-                mTrailerCallbacks.open(trailer.getTrailerUrl());
+                mTrailerCallbacks.open(trailer);
             }
         });
     }

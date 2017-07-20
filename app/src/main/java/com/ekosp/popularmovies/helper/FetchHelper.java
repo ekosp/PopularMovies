@@ -1,17 +1,17 @@
 package com.ekosp.popularmovies.helper;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
+import android.content.Context;
+import android.database.Cursor;
+import android.util.DisplayMetrics;
 
 import com.ekosp.popularmovies.BuildConfig;
+import com.ekosp.popularmovies.data.MovieContract;
 import com.ekosp.popularmovies.model.Movie;
 import com.ekosp.popularmovies.model.Review;
 import com.ekosp.popularmovies.model.Trailer;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
@@ -27,7 +27,7 @@ public class FetchHelper {
 
     private final static String MOST_POPULAR = "popular";
     private final static String HIGHEST_RATED = "top_rated";
-    private final static String FAVORITES = "favotires";
+    private final static String FAVORITES = "favorites";
     private TrailerAdapter mTrailerListAdapter;
     private MoviesAdapter mAdapter;
     private ReviewAdapter mReviewListAdapter;
@@ -97,152 +97,34 @@ public class FetchHelper {
 
         MoviesApiService service = restAdapter.create(MoviesApiService.class);
 
-        if (short_by.equals(MOST_POPULAR)) {
-            service.getPopularMovies(new Callback<Movie.MovieResult>() {
-                @Override
-                public void success(Movie.MovieResult movieResult, Response response) {
-                    mAdapter.setMovieList(movieResult.getResults());
-                }
-                @Override
-                public void failure(RetrofitError error) {
-                    error.printStackTrace();
-                }
-            });
-        } else if (short_by.equals(HIGHEST_RATED)) {
-            service.getTopRatedMovies(new Callback<Movie.MovieResult>() {
-                @Override
-                public void success(Movie.MovieResult movieResult, Response response) {
-                    mAdapter.setMovieList(movieResult.getResults());
-                }
-                @Override
-                public void failure(RetrofitError error) {
-                    error.printStackTrace();
-                }
-            });
-        } else if (short_by.equals(FAVORITES)) {
-            List<Movie> filem = new List<Movie>() {
-                @Override
-                public int size() {
-                    return 0;
-                }
+        switch (short_by) {
+            case MOST_POPULAR:
+                service.getPopularMovies(new Callback<Movie.MovieResult>() {
+                    @Override
+                    public void success(Movie.MovieResult movieResult, Response response) {
+                        mAdapter.setMovieList(movieResult.getResults());
+                    }
 
-                @Override
-                public boolean isEmpty() {
-                    return false;
-                }
+                    @Override
+                    public void failure(RetrofitError error) {
+                        error.printStackTrace();
+                    }
+                });
+                break;
+            case HIGHEST_RATED:
+                service.getTopRatedMovies(new Callback<Movie.MovieResult>() {
+                    @Override
+                    public void success(Movie.MovieResult movieResult, Response response) {
+                        mAdapter.setMovieList(movieResult.getResults());
+                    }
 
-                @Override
-                public boolean contains(Object o) {
-                    return false;
-                }
+                    @Override
+                    public void failure(RetrofitError error) {
+                        error.printStackTrace();
+                    }
+                });
+                break;
 
-                @NonNull
-                @Override
-                public Iterator<Movie> iterator() {
-                    return null;
-                }
-
-                @NonNull
-                @Override
-                public Object[] toArray() {
-                    return new Object[0];
-                }
-
-                @NonNull
-                @Override
-                public <T> T[] toArray(@NonNull T[] a) {
-                    return null;
-                }
-
-                @Override
-                public boolean add(Movie movie) {
-                    return false;
-                }
-
-                @Override
-                public boolean remove(Object o) {
-                    return false;
-                }
-
-                @Override
-                public boolean containsAll(@NonNull Collection<?> c) {
-                    return false;
-                }
-
-                @Override
-                public boolean addAll(@NonNull Collection<? extends Movie> c) {
-                    return false;
-                }
-
-                @Override
-                public boolean addAll(int index, @NonNull Collection<? extends Movie> c) {
-                    return false;
-                }
-
-                @Override
-                public boolean removeAll(@NonNull Collection<?> c) {
-                    return false;
-                }
-
-                @Override
-                public boolean retainAll(@NonNull Collection<?> c) {
-                    return false;
-                }
-
-                @Override
-                public void clear() {
-
-                }
-
-                @Override
-                public Movie get(int index) {
-                    return null;
-                }
-
-                @Override
-                public Movie set(int index, Movie element) {
-                    return null;
-                }
-
-                @Override
-                public void add(int index, Movie element) {
-
-                }
-
-                @Override
-                public Movie remove(int index) {
-                    return null;
-                }
-
-                @Override
-                public int indexOf(Object o) {
-                    return 0;
-                }
-
-                @Override
-                public int lastIndexOf(Object o) {
-                    return 0;
-                }
-
-                @Override
-                public ListIterator<Movie> listIterator() {
-                    return null;
-                }
-
-                @NonNull
-                @Override
-                public ListIterator<Movie> listIterator(int index) {
-                    return null;
-                }
-
-                @NonNull
-                @Override
-                public List<Movie> subList(int fromIndex, int toIndex) {
-                    return null;
-                }
-            };
-            //filem.add
-            mAdapter.setMovieList(filem);
         }
     }
 
@@ -273,4 +155,34 @@ public class FetchHelper {
         });
     }
 
+    public void fetchFavorite(Cursor cursor) {
+
+        List<Movie> mMovieList = new ArrayList<>();
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            for (int i=0; i< cursor.getCount(); i++){
+                // set favorite movie to model
+                Movie movie = new Movie();
+                movie.setId(cursor.getInt(MovieContract.INDEX_COL_MOVIE_ID));
+                movie.setPosterFromDb(cursor.getString(MovieContract.INDEX_COL_MOVIE_POSTER_PATH));
+                movie.setReleaseDate(cursor.getString(MovieContract.INDEX_COL_MOVIE_RELEASE_DATE));
+                movie.setTitle(cursor.getString(MovieContract.INDEX_COL_MOVIE_TITLE));
+                movie.setOverview(cursor.getString(MovieContract.INDEX_COL_MOVIE_OVERVIEW));
+                movie.setUserRating(cursor.getString(MovieContract.INDEX_COL_MOVIE_VOTE_AVERAGE));
+                movie.setBackdropFromDb(cursor.getString(MovieContract.INDEX_COL_MOVIE_BACKDROP_PATH));
+
+                mMovieList.add(movie);
+                cursor.moveToNext();
+            }
+        }
+
+        mAdapter.setMovieList(mMovieList);
+    }
+
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        return (int) (dpWidth / 180);
+    }
 }

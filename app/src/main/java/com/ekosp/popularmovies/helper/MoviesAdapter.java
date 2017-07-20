@@ -1,15 +1,11 @@
 package com.ekosp.popularmovies.helper;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ekosp.popularmovies.R;
 import com.ekosp.popularmovies.model.Movie;
@@ -17,8 +13,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.ekosp.popularmovies.R.id.recyclerView;
 
 /**
  * Created by Eko S.P on 08/07/2017.
@@ -28,7 +22,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
 
     private final List<Movie> mMovieList;
-    private final LayoutInflater mInflater;
     private final Context mContext;
     private final movieCallbacks mMovieCallbacks;
 
@@ -49,7 +42,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     public MoviesAdapter(Context context, movieCallbacks mMovieCallbacks) {
         this.mContext = context;
-        this.mInflater = LayoutInflater.from(context);
         this.mMovieCallbacks = mMovieCallbacks;
         this.mMovieList = new ArrayList<>();
     }

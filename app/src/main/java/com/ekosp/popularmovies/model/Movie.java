@@ -12,6 +12,9 @@ public class Movie implements Parcelable {
 
     @SerializedName("id")
     private long id;
+
+
+
     @SerializedName("original_title")
     private String title;
     @SerializedName("poster_path")
@@ -57,12 +60,20 @@ public class Movie implements Parcelable {
         this.id = id;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getTitle() {
         return title;
     }
 
     public String getPoster() {
         return TMDB_IMAGE_PATH + poster;
+    }
+
+    public void setPosterFromDb(String poster){
+        this.poster = poster.replace(TMDB_IMAGE_PATH,"");
     }
 
     public void setPoster(String poster) {
@@ -75,6 +86,10 @@ public class Movie implements Parcelable {
 
     public void setBackdrop(String backdrop) {
         this.backdrop = backdrop;
+    }
+
+    public void setBackdropFromDb(String backdrop) {
+        this.backdrop = backdrop.replace(TMDB_IMAGE_PATH,"");
     }
 
     public String getOverview() {
