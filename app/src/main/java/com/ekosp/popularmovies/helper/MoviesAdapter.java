@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.ekosp.popularmovies.R;
 import com.ekosp.popularmovies.model.Movie;
+import com.ekosp.popularmovies.model.Trailer;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -86,6 +87,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         this.mMovieList.clear();
         this.mMovieList.addAll(movieList);
         notifyDataSetChanged();
+    }
+
+    public List<Movie> getMovieList() {
+        return mMovieList;
     }
 
 

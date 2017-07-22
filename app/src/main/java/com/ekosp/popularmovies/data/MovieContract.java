@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Created by Eko S.P.
+ * Created by Eko S.P on 15/07/2017.
  * You can contact me at : ekosetyopurnomo@gmail.com
  * or for more detail at  : http://ekosp.com
  */

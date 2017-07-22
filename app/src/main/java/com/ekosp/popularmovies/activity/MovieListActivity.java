@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.ekosp.popularmovies.R;
 import com.ekosp.popularmovies.data.MovieContract;
@@ -23,6 +24,10 @@ import com.ekosp.popularmovies.fragment.MovieDetailFragment;
 import com.ekosp.popularmovies.helper.FetchHelper;
 import com.ekosp.popularmovies.helper.MoviesAdapter;
 import com.ekosp.popularmovies.model.Movie;
+import com.ekosp.popularmovies.model.Trailer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.ekosp.popularmovies.R.id.recyclerView;
 import static com.ekosp.popularmovies.helper.FetchHelper.calculateNoOfColumns;
@@ -39,9 +44,12 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
     private final static String MOST_POPULAR = "popular";
     private final static String HIGHEST_RATED = "top_rated";
     private final static String FAVORITES = "favorites";
-    private final String mSortBy = MOST_POPULAR;
+    private final static String PARAM_MOVIES = "PARAM_MOVIES";
+    private final static String PARAM_SORT_BY = "PARAM_SORT_BY";
+    private String mSortBy = MOST_POPULAR;
     private static final int FAVORITE_LOADER = 0;
     private FetchHelper fetchHelper;
+    private MoviesAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,38 +61,25 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
         toolbar.setTitle(R.string.title_movie_list);
         setSupportActionBar(toolbar);
 
-        // add shortcut icon to homescreen
-        SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean isAppInstalled = false;
-
-        if (!isAppInstalled) {
-            //  create shortcut icon at homescreen
-            Intent shortcutIntent = new Intent(getApplicationContext(), MovieListActivity.class);
-            shortcutIntent.setAction(Intent.ACTION_MAIN);
-            Intent intent = new Intent();
-            intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-            intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getResources().getString(R.string.app_name));
-            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource
-                .fromContext(getApplicationContext(), R.drawable.app_icon));
-            intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-            getApplicationContext().sendBroadcast(intent);
-
-            //make preference true
-            SharedPreferences.Editor editor = appPreferences.edit();
-            editor.putBoolean("isAppInstalled", true);
-            editor.apply();
-        }
-
         mRecyclerView = (RecyclerView) findViewById(recyclerView);
         int mNoOfColumns = calculateNoOfColumns(getApplicationContext());
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, mNoOfColumns));
-        MoviesAdapter mAdapter = new MoviesAdapter(this, this);
-
+        mAdapter = new MoviesAdapter(this, this);
         mRecyclerView.setAdapter(mAdapter);
 
         fetchHelper = new FetchHelper();
         fetchHelper.setmAdapter(mAdapter);
-        fetchHelper.fetchMovies(mSortBy);
+
+        if (savedInstanceState != null) {
+            mSortBy = savedInstanceState.getString(PARAM_SORT_BY);
+            if (savedInstanceState.containsKey(PARAM_MOVIES)) {
+                List<Movie> movies = savedInstanceState.getParcelableArrayList(PARAM_MOVIES);
+                mAdapter.setMovieList(movies);
+            }
+        } else {
+            // Fetch Movies only if savedInstanceState == null
+            fetchHelper.fetchMovies(mSortBy);
+        }
 
     }
 
@@ -121,11 +116,8 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
                 item.setChecked(true);
                 break;
             case R.id.sort_by_favorites:
-               // fetchHelper.fetchMovies(FAVORITES);
                 loadFavoriteFromProvider();
                 item.setChecked(true);
-
-              //  getContentResolver().query();
                 break;
             default:
                 break;
@@ -142,6 +134,20 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(MovieDetailFragment.PARAM_MOVIE, movie);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save list
+        List<Movie> movies = mAdapter.getMovieList();
+        ArrayList<Movie> alMovies = new ArrayList<>(movies.size());
+        alMovies.addAll(movies);
+        if (!movies.isEmpty()) {
+            outState.putParcelableArrayList (PARAM_MOVIES, alMovies);
+        }
+        // save filtering by
+        outState.putString(PARAM_SORT_BY, mSortBy);
     }
 
 

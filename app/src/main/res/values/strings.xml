@@ -6,10 +6,13 @@
     <string name="top_rated">Highest rated</string>
     <string name="release_date">Release</string>
     <string name="user_rating_movie">%1$s/10</string>
+    <string name="sample_rating_movie">8.1/10</string>
+    <string name="sample_release_date">04 March 1992</string>
     <string name="user_rating">Rating</string>
     <string name="title_movie_list">Popular Movies</string>
     <string name="favorites">Favorites</string>
     <string name="add_favorites">Mark as favorite</string>
     <string name="remove_favorites">Remove from favorites</string>
     <string name="share_title">Share</string>
+    <string name="movie_title">Movie Title Here</string>
 </resources>

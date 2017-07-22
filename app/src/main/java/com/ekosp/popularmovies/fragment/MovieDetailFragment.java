@@ -9,11 +9,17 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentManagerNonConfig;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.ekosp.popularmovies.activity.MovieDetailActivity;
@@ -41,6 +48,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import static com.ekosp.popularmovies.R.id.recyclerView;
 
 /**
  * Created by Eko S.P.
@@ -90,6 +99,7 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
                     .config(Bitmap.Config.RGB_565)
                     .into(movieBackdrop);
         }
+
     }
 
     @Override
@@ -119,7 +129,7 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
         updateRatingBar();
         updateFavoriteButtons();
 
-        // tampilkan trailer movies
+        // set trailer movies
         RecyclerView mRecyclerViewForTrailers = (RecyclerView) rootView.findViewById(R.id.trailer_list);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -130,16 +140,18 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
         mRecyclerViewForTrailers.setNestedScrollingEnabled(false);
 
         FetchHelper fetchHelper;
+
         if (savedInstanceState != null && savedInstanceState.containsKey(PARAM_TRAILERS)) {
             List<Trailer> trailers = savedInstanceState.getParcelableArrayList(PARAM_TRAILERS);
             mTrailerListAdapter.setTrailerList(trailers);
+
         } else {
             fetchHelper = new FetchHelper();
             fetchHelper.setmTrailerListAdapter(mTrailerListAdapter);
             fetchHelper.fetchTrailer(mMovie.getId() );
         }
 
-        // tampilkan review movie
+        // set review movie
         RecyclerView mRecycleViewForReviews = (RecyclerView) rootView.findViewById(R.id.review_list);
         mReviewAdapter = new ReviewAdapter(getContext());
         mRecycleViewForReviews.setAdapter(mReviewAdapter);
@@ -159,13 +171,14 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        // save trailer list
         List<Trailer> trailers = mTrailerListAdapter.getTrailerList();
         ArrayList<Trailer> alTrailers = new ArrayList<>(trailers.size());
         alTrailers.addAll(trailers);
         if (!trailers.isEmpty()) {
             outState.putParcelableArrayList (PARAM_TRAILERS, alTrailers);
         }
-
+        // save review list
         List<Review> reviews = mReviewAdapter.getmReviewList();
         ArrayList<Review> alReviews = new ArrayList<>(reviews.size());
         alReviews.addAll(reviews);
@@ -192,11 +205,8 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.trai
     @Override
     public void open(Trailer trailer) {
         Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+trailer.getKey()));
-        Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(trailer.getTrailerUrl()));
-        try {
+        if (appIntent.resolveActivity(getContext().getPackageManager()) != null) {
             startActivity(appIntent);
-        } catch (ActivityNotFoundException ex){
-            startActivity(webIntent);
         }
     }
 

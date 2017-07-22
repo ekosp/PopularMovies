@@ -47,8 +47,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
         }
 
     public TrailerAdapter(Context context, trailerCallbacks mTrailerCallbacks) {
-            this.mContext = context;
-        LayoutInflater mInflater = LayoutInflater.from(context);
+        this.mContext = context;
         this.mTrailerCallbacks = mTrailerCallbacks;
         this.mTrailerList = new ArrayList<>();
     }

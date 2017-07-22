@@ -16,11 +16,8 @@ import retrofit.http.Path;
 
 interface MoviesApiService {
 
-    @GET("/movie/popular")
-    void getPopularMovies(Callback<Movie.MovieResult> callback);
-
-    @GET("/movie/top_rated")
-    void getTopRatedMovies(Callback<Movie.MovieResult> callback);
+   @GET("/movie/{short}")
+    void getMovies(@Path("short") String short_by, Callback<Movie.MovieResult> callback);
 
     @GET("/movie/{id}/videos")
     void getTrailerMovies(@Path("id") long movieId, Callback<Trailer.TrailerResult> callback );

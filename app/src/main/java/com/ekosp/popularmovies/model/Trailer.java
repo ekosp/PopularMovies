@@ -112,10 +112,10 @@ public class Trailer implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(id);
-       parcel.writeString(key);
+        parcel.writeString(key);
         parcel.writeString(name);
-       parcel.writeString(site);
-       parcel.writeString(size);
+        parcel.writeString(site);
+        parcel.writeString(size);
         parcel.writeString(type);
     }
 

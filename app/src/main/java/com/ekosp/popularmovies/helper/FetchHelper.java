@@ -58,7 +58,6 @@ public class FetchHelper {
     }
 
     public void fetchTrailer(final long movieId) {
-
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://api.themoviedb.org/3")
                 .setRequestInterceptor(new RequestInterceptor() {
@@ -69,7 +68,6 @@ public class FetchHelper {
                 })
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
-
 
         MoviesApiService service = restAdapter.create(MoviesApiService.class);
         service.getTrailerMovies( movieId, new Callback<Trailer.TrailerResult>() {
@@ -97,40 +95,19 @@ public class FetchHelper {
                 .build();
 
         MoviesApiService service = restAdapter.create(MoviesApiService.class);
-
-        switch (short_by) {
-            case MOST_POPULAR:
-                service.getPopularMovies(new Callback<Movie.MovieResult>() {
-                    @Override
-                    public void success(Movie.MovieResult movieResult, Response response) {
-                        mAdapter.setMovieList(movieResult.getResults());
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        error.printStackTrace();
-                    }
-                });
-                break;
-            case HIGHEST_RATED:
-                service.getTopRatedMovies(new Callback<Movie.MovieResult>() {
-                    @Override
-                    public void success(Movie.MovieResult movieResult, Response response) {
-                        mAdapter.setMovieList(movieResult.getResults());
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        error.printStackTrace();
-                    }
-                });
-                break;
-
-        }
+        service.getMovies( short_by, new Callback<Movie.MovieResult>() {
+            @Override
+            public void success(Movie.MovieResult movieResult, Response response) {
+                mAdapter.setMovieList(movieResult.getResults());
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                error.printStackTrace();
+            }
+        });
     }
 
     public void fetchReview(final long movieId) {
-
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://api.themoviedb.org/3")
                 .setRequestInterceptor(new RequestInterceptor() {
@@ -141,7 +118,6 @@ public class FetchHelper {
                 })
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
-
 
         MoviesApiService service = restAdapter.create(MoviesApiService.class);
         service.getReviewMovies( movieId, new Callback<Review.ReviewsResult>() {
@@ -157,7 +133,6 @@ public class FetchHelper {
     }
 
     public void fetchFavorite(Cursor cursor) {
-
         List<Movie> mMovieList = new ArrayList<>();
 
         if (cursor != null) {
@@ -177,7 +152,6 @@ public class FetchHelper {
                 cursor.moveToNext();
             }
         }
-
         mAdapter.setMovieList(mMovieList);
     }
 
