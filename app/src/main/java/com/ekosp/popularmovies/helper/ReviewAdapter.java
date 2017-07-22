@@ -42,7 +42,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     public ReviewAdapter(Context context) {
         this.mReviewList = new ArrayList<>();
-
     }
 
     @Override

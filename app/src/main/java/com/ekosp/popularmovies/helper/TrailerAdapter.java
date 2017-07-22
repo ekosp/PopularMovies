@@ -44,7 +44,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieVie
            super(itemView);
            mThumbnailView = (ImageView) itemView.findViewById(R.id.trailer_thumbnail);
         }
-        }
+    }
 
     public TrailerAdapter(Context context, trailerCallbacks mTrailerCallbacks) {
         this.mContext = context;

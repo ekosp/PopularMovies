@@ -18,9 +18,6 @@ public class Movie implements Parcelable {
 
     @SerializedName("id")
     private long id;
-
-
-
     @SerializedName("original_title")
     private String title;
     @SerializedName("poster_path")

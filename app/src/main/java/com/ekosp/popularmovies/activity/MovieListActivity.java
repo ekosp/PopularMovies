@@ -150,8 +150,6 @@ public class MovieListActivity extends AppCompatActivity implements MoviesAdapte
         outState.putString(PARAM_SORT_BY, mSortBy);
     }
 
-
-
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this,

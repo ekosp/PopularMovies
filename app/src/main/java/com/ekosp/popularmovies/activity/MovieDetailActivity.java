@@ -81,15 +81,4 @@ public class MovieDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //save value on onSaveInstanceState
-  @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        //save fragment state
-       movieDetailFragment = (MovieDetailFragment) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
-       if (movieDetailFragment != null && movieDetailFragment.isVisible()) {
-            getSupportFragmentManager().putFragment(outState,TAG_FRAGMENT,movieDetailFragment);
-       }
-    }
-
 }

@@ -40,7 +40,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                 super(itemView);
                 imageView = (ImageView) itemView.findViewById(R.id.imageView);
             }
-
         }
 
     public MoviesAdapter(Context context, movieCallbacks mMovieCallbacks) {
